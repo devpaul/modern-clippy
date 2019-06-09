@@ -1,0 +1,12 @@
+{
+  "name": "modern-clippy-common",
+  "version": "1.0.0",
+  "description": "Common files across implementations",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Paul Shannon",
+  "license": "MPL-2.0"
+}

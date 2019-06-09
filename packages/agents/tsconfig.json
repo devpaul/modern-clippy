@@ -1,0 +1,10 @@
+{
+	"extends": "../tsconfig.json",
+	"compilerOptions": {
+		"esModuleInterop": true,
+		"module": "commonjs",
+		"outDir": "output",
+		"sourceMap": true,
+		"target": "es2015"
+	}
+}

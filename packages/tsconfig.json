@@ -1,0 +1,19 @@
+{
+	"compilerOptions": {
+		"declaration": false,
+		"lib": [
+			"es2015",
+			"dom",
+			"dom.iterable",
+			"es2015.generator",
+			"esnext.asynciterable"
+		],
+		"module": "umd",
+		"moduleResolution": "node",
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noImplicitReturns": false,
+		"noFallthroughCasesInSwitch": true,
+		"strict": true,
+	}
+}

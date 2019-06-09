@@ -1,0 +1,25 @@
+{
+  "name": "modern-clippy",
+  "version": "1.0.0",
+  "description": "modern implementations of a JS Clippy",
+  "main": "index.js",
+  "scripts": {
+    "precommit": "lint-staged",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Paul Shannon",
+  "license": "MPL-2.0",
+  "dependencies": {
+    "cross-env": "^5.2.0",
+    "husky": "^2.4.0",
+    "lint-staged": "^8.2.0",
+    "prettier": "^1.18.2",
+    "typescript": "^3.4.5"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "prettier --write",
+      "git add"
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "modern-clippy-web-component",
+  "version": "1.0.0",
+  "description": "Vanilla JS implmenetation of Clippy using Web Components",
+  "main": "none",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Paul Shannon",
+  "license": "MPL-2.0"
+}
