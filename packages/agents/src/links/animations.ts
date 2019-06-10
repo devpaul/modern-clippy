@@ -1,6 +1,7 @@
 import { AnimationMap } from '../interfaces';
+import { mp3 } from './assets';
 
-export const animations: AnimationMap = {
+export const animations: AnimationMap<typeof mp3> = {
 	IdleTailWagA: {
 		frames: [
 			{

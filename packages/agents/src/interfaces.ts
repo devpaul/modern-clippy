@@ -25,8 +25,8 @@ export interface AgentConfiguration {
 	soundPack: SoundConfiguration;
 }
 
-export interface AnimationMap {
-	[key: string]: AnimationDefinition;
+export interface AnimationMap<S extends SoundPack = SoundPack> {
+	[key: string]: AnimationDefinition<S>;
 }
 
 export interface SoundConfiguration {
@@ -37,8 +37,8 @@ export interface SoundPack {
 	[key: string]: string;
 }
 
-export interface AnimationDefinition {
-	frames: FrameDefinition[];
+export interface AnimationDefinition<S extends SoundPack> {
+	frames: FrameDefinition<S>[];
 	useExitBranching?: boolean;
 }
 
@@ -46,11 +46,11 @@ export interface BranchDefinition {
 	branches: { frameIndex: number; weight: number }[];
 }
 
-export interface FrameDefinition {
+export interface FrameDefinition<S extends SoundPack> {
 	branching?: BranchDefinition;
 	duration: number;
 	images?: FrameImages;
-	sound?: string;
+	sound?: keyof S;
 	exitBranch?: number;
 }
 
