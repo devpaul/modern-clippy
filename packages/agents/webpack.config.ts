@@ -10,8 +10,8 @@ const config: webpack.Configuration = {
 		rover: './src/rover/index.ts'
 	},
 	output: {
-		path: path.resolve(__dirname, 'output'),
-		filename: '[name].bundle.js'
+		path: path.resolve(__dirname, 'output', 'bundles'),
+		filename: '[name]/index.js'
 	},
 	resolve: {
 		extensions: ['.tsx', '.ts', '.js']

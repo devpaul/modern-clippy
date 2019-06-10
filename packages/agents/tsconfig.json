@@ -2,10 +2,14 @@
 	"extends": "../tsconfig.json",
 	"compilerOptions": {
 		"declaration": true,
+		"declarationDir": "output/declarations",
 		"esModuleInterop": true,
 		"module": "commonjs",
 		"outDir": "output",
 		"sourceMap": true,
 		"target": "es2015"
-	}
+	},
+	"exclude": [
+		"webpack.config.ts"
+	]
 }

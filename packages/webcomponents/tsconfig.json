@@ -2,6 +2,10 @@
 	"extends": "../tsconfig.json",
 	"compilerOptions": {
 		"outDir": "output",
+		"module": "commonjs",
 		"target": "es2015"
-	}
+	},
+	"exclude": [
+		"webpack.config.ts"
+	]
 }
