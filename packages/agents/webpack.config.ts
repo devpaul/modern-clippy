@@ -10,6 +10,8 @@ const config: webpack.Configuration = {
 		rover: './src/rover/index.ts'
 	},
 	output: {
+		library: '[name]bundle',
+		libraryTarget: 'umd',
 		path: path.resolve(__dirname, 'output', 'bundles'),
 		filename: '[name]/index.js'
 	},
