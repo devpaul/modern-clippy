@@ -4,9 +4,22 @@
 	<meta charset="UTF-8">
 	<title>Modern Clippy</title>
 	<script type="text/javascript" src="./packages/webcomponents/output/main.js"></script>
+	<style>
+		main {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: space-evenly;
+		}
+	</style>
 </head>
 
 <body>
-	<modern-clippy></modern-clippy>
+	<main>
+		<modern-clippy id="clippy"></modern-clippy>
+		<modern-merlin id="merlin"></modern-merlin>
+		<modern-links id="links"></modern-links>
+		<modern-rover id="rover"></modern-rover>
+	</main>
 </body>
 </html>

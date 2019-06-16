@@ -15,6 +15,9 @@ export class SoundBoard {
 		const buffer = this.effects[name];
 
 		if (buffer) {
+			if (this.context.state === 'suspended') {
+				this.context.resume();
+			}
 			const source = this.context.createBufferSource();
 			source.buffer = buffer;
 			source.connect(this.context.destination);
@@ -27,6 +30,14 @@ export class SoundBoard {
 
 export class CoreAudio {
 	constructor(private readonly context: AudioContext = new AudioContext()) {}
+
+	get suspended() {
+		return this.context.state === 'suspended';
+	}
+
+	resume() {
+		this.context.resume();
+	}
 
 	load(config: SoundConfiguration) {
 		const { mp3, ogg, ...rest } = config;

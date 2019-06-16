@@ -6,6 +6,10 @@ Modern Clippy is a reimplementation of Clippy using Web Components
 
 # Component APIs
 
+# Attributes
+
+* `mute` if sound is muted
+
 ## Properties
 
 * `current` READONLY string: the current animation

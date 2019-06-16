@@ -1,11 +1,17 @@
 import { AgentConfiguration } from 'modern-clippy';
 import { animator } from '../../common/output/animator';
+import audio, { SoundBoard } from '../../common/output/coreAudio';
 
 export class Agent extends HTMLElement {
-	public mute = false; // TODO make this an attribute
-	protected _agentNode: HTMLElement;
-	protected _config!: AgentConfiguration;
-	protected _control?: ReturnType<typeof animator> & { action: string };
+	private _agentNode: HTMLElement;
+	private _config!: AgentConfiguration;
+	private _control?: ReturnType<typeof animator> & { action: string };
+	private _mute = false;
+	private _soundBoard!: SoundBoard;
+
+	static get observedAttributes() {
+		return ['mute'];
+	}
 
 	constructor() {
 		super();
@@ -23,12 +29,22 @@ export class Agent extends HTMLElement {
 		return this._control && this._control.action;
 	}
 
-	load(config: AgentConfiguration) {
+	attributeChangedCallback(name: string, _oldValue: string, newValue: string) {
+		console.log(name, _oldValue, newValue);
+		switch (name) {
+			case 'mute':
+				this._mute = newValue === 'true';
+				break;
+		}
+	}
+
+	async load(config: AgentConfiguration) {
 		const {
 			characterMap,
 			frameSize: { width, height }
 		} = config;
 		this._config = config;
+		this._soundBoard = await audio.load(config.soundPack);
 		this._agentNode.style.width = width + 'px';
 		this._agentNode.style.height = height + 'px';
 		this._agentNode.style.backgroundImage = `url(${characterMap})`;
@@ -40,6 +56,7 @@ export class Agent extends HTMLElement {
 		if (!animation) {
 			throw new Error(`Action ${action} does not exist`);
 		}
+		this._control && this._control.stopImmediately();
 		this.dispatchEvent(
 			new CustomEvent('actionStart', {
 				detail: { action }
@@ -54,7 +71,9 @@ export class Agent extends HTMLElement {
 					const [x, y] = images[0];
 					this.setFrame(x, y);
 				}
-				// TODO add sound
+				if (!this._mute && frame.sound) {
+					this._soundBoard.play(String(frame.sound));
+				}
 				this.dispatchEvent(
 					new CustomEvent('frame', {
 						detail: { action, frame, time }
