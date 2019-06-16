@@ -1,4 +1,4 @@
-import { AgentConfiguration } from '../interfaces';
+import { AgentConfiguration } from 'modern-clippy';
 import { animations } from './animations';
 import { mp3, characterMap } from './assets';
 

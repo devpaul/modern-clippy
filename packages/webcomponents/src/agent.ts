@@ -1,4 +1,4 @@
-import { AgentConfiguration } from '../../agents/output/bundles/interfaces';
+import { AgentConfiguration } from 'modern-clippy';
 
 export class Agent extends HTMLElement {
 	protected _agentNode: HTMLElement;

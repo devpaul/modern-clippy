@@ -1,8 +1,12 @@
 {
 	"extends": "../tsconfig.json",
 	"compilerOptions": {
+		"baseUrl": ".",
 		"declaration": true,
 		"outDir": "output",
+		"paths": {
+			"modern-clippy": [ "../@types/modern-clippy" ]
+		},
 		"target": "es2015"
 	}
 }

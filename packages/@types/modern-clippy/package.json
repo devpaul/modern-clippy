@@ -1,0 +1,15 @@
+{
+  "name": "@types/modern-clippy",
+  "version": "1.0.0",
+  "description": "Shared Typings for Clippy",
+  "types": "./index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "tsc"
+  },
+  "author": "Paul Shannon",
+  "license": "MPL-2.0",
+  "dependencies": {
+    "typescript": "^3.5.2"
+  }
+}

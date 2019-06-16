@@ -1,4 +1,4 @@
-import { AnimationDefinition, BranchDefinition, FrameDefinition } from './interfaces';
+import { AnimationDefinition, BranchDefinition, FrameDefinition } from 'modern-clippy';
 
 function pickRandom(branches: BranchDefinition['branches']) {
 	const totalWeight = branches.reduce((weight, branch) => {

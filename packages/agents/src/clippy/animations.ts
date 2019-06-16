@@ -1,5 +1,5 @@
-import { AnimationMap } from '../interfaces';
 import { mp3 } from './assets';
+import { AnimationMap } from 'modern-clippy';
 
 export const animations: AnimationMap<typeof mp3> = {
 	Congratulate: {

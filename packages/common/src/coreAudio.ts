@@ -1,4 +1,4 @@
-import { SoundConfiguration, SoundPack } from './interfaces';
+import { SoundConfiguration, SoundPack } from 'modern-clippy';
 import global from './util/global';
 
 const AudioContext = global.AudioContext || global.webkitAudioContext;

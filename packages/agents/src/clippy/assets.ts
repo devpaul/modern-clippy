@@ -1,4 +1,4 @@
-import { SoundPack } from '../interfaces';
+import { SoundPack } from 'modern-clippy';
 
 export const mp3: SoundPack = {
 	'1': require('./assets/1.mp3'),

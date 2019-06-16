@@ -37,7 +37,7 @@ export interface SoundPack {
 	[key: string]: string;
 }
 
-export interface AnimationDefinition<S extends SoundPack> {
+export interface AnimationDefinition<S extends SoundPack = SoundPack> {
 	frames: FrameDefinition<S>[];
 	useExitBranching?: boolean;
 }
@@ -46,7 +46,7 @@ export interface BranchDefinition {
 	branches: { frameIndex: number; weight: number }[];
 }
 
-export interface FrameDefinition<S extends SoundPack> {
+export interface FrameDefinition<S extends SoundPack = SoundPack> {
 	branching?: BranchDefinition;
 	duration: number;
 	images?: FrameImages;
