@@ -42,16 +42,33 @@ export class Agent extends HTMLElement {
 			if (!animation) {
 				throw new Error(`Action ${action} does not exist`);
 			}
+			this.dispatchEvent(
+				new CustomEvent('actionStart', {
+					detail: { action }
+				})
+			);
+			let time = 0;
 			for (let frame of animator(animation)) {
 				const { images } = frame;
 				if (images) {
 					const [x, y] = images[0];
 					this.setFrame(x, y);
 				}
+				this.dispatchEvent(
+					new CustomEvent('frame', {
+						detail: { action, frame, time }
+					})
+				);
 				await sleep(frame.duration);
+				time += frame.duration;
 			}
 		} finally {
 			this._currentAction = undefined;
+			this.dispatchEvent(
+				new CustomEvent('actionEnd', {
+					detail: { action }
+				})
+			);
 		}
 	}
 
