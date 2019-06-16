@@ -3,12 +3,9 @@ import webpack from 'webpack';
 
 const config: webpack.Configuration = {
 	mode: 'production',
-	entry: {
-		clippy: './src/clippy.ts'
-	},
+	entry: './src/index.ts',
 	output: {
-		path: path.resolve(__dirname, 'output'),
-		filename: 'modern-[name].js'
+		path: path.resolve(__dirname, 'output')
 	},
 	resolve: {
 		extensions: ['.tsx', '.ts', '.js']
