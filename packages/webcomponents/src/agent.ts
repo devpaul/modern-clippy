@@ -1,11 +1,11 @@
 import { AgentConfiguration } from 'modern-clippy';
 import { animator } from '../../common/output/animator';
-import { sleep } from '../../common/output/util/sleep';
 
 export class Agent extends HTMLElement {
+	public mute = false; // TODO make this an attribute
 	protected _agentNode: HTMLElement;
 	protected _config!: AgentConfiguration;
-	protected _currentAction: string | undefined;
+	protected _control?: ReturnType<typeof animator> & { action: string };
 
 	constructor() {
 		super();
@@ -20,7 +20,7 @@ export class Agent extends HTMLElement {
 	}
 
 	get current(): string | undefined {
-		return this._currentAction;
+		return this._control && this._control.action;
 	}
 
 	load(config: AgentConfiguration) {
@@ -35,41 +35,43 @@ export class Agent extends HTMLElement {
 		this.setFrame(0, 0);
 	}
 
-	async play(action: string) {
-		try {
-			this._currentAction = action;
-			const animation = this._config.animations[action];
-			if (!animation) {
-				throw new Error(`Action ${action} does not exist`);
-			}
-			this.dispatchEvent(
-				new CustomEvent('actionStart', {
-					detail: { action }
-				})
-			);
-			let time = 0;
-			for (let frame of animator(animation)) {
+	play(action: string) {
+		const animation = this._config.animations[action];
+		if (!animation) {
+			throw new Error(`Action ${action} does not exist`);
+		}
+		this.dispatchEvent(
+			new CustomEvent('actionStart', {
+				detail: { action }
+			})
+		);
+		let time = 0;
+		this._control = {
+			action,
+			...animator(animation, (frame) => {
 				const { images } = frame;
 				if (images) {
 					const [x, y] = images[0];
 					this.setFrame(x, y);
 				}
+				// TODO add sound
 				this.dispatchEvent(
 					new CustomEvent('frame', {
 						detail: { action, frame, time }
 					})
 				);
-				await sleep(frame.duration);
 				time += frame.duration;
-			}
-		} finally {
-			this._currentAction = undefined;
+			})
+		};
+		this._control.done.finally(() => {
 			this.dispatchEvent(
 				new CustomEvent('actionEnd', {
 					detail: { action }
 				})
 			);
-		}
+			this._control = undefined;
+		});
+		return this._control;
 	}
 
 	playIdle() {
@@ -84,5 +86,13 @@ export class Agent extends HTMLElement {
 		}
 		this._agentNode.style.backgroundPositionX = x + 'px';
 		this._agentNode.style.backgroundPositionY = y + 'px';
+	}
+
+	stop() {
+		this._control && this._control.stop();
+	}
+
+	stopImmediately() {
+		this._control && this._control.stopImmediately();
 	}
 }

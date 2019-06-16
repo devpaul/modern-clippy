@@ -7,6 +7,7 @@
 		"paths": {
 			"modern-clippy": [ "../@types/modern-clippy" ]
 		},
+		"module": "es2015",
 		"target": "es2015"
 	}
 }

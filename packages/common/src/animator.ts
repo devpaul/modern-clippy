@@ -1,4 +1,5 @@
 import { AnimationDefinition, BranchDefinition, FrameDefinition } from 'modern-clippy';
+import { sleep } from './util/sleep';
 
 function pickRandom(branches: BranchDefinition['branches']) {
 	const totalWeight = branches.reduce((weight, branch) => {
@@ -13,7 +14,7 @@ function pickRandom(branches: BranchDefinition['branches']) {
 	}
 }
 
-export function* animator(animation: AnimationDefinition): IterableIterator<FrameDefinition> {
+export function* stepper(animation: AnimationDefinition): IterableIterator<FrameDefinition> {
 	let offset = 0;
 	let frames = animation.frames;
 	let exit = false;
@@ -30,4 +31,40 @@ export function* animator(animation: AnimationDefinition): IterableIterator<Fram
 			offset++;
 		}
 	}
+}
+
+export function animator(animation: AnimationDefinition, frameCallback: (frame: FrameDefinition) => void) {
+	const iterator = stepper(animation);
+	let exit = false;
+	let immediate = false;
+	let callImmediate: () => void;
+	const done = Promise.race([
+		(async () => {
+			for (
+				let { done, value: frame } = iterator.next(exit);
+				!immediate && !done;
+				{ done, value: frame } = iterator.next(exit)
+			) {
+				frameCallback(frame);
+				await sleep(frame.duration);
+			}
+		})(),
+		new Promise((result) => {
+			callImmediate = result;
+		})
+	]);
+
+	return {
+		done,
+
+		stop() {
+			exit = false;
+			return done;
+		},
+
+		stopImmediately() {
+			immediate = true;
+			callImmediate();
+		}
+	};
 }
