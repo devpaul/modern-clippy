@@ -72,6 +72,11 @@ export class Agent extends HTMLElement {
 		}
 	}
 
+	playIdle() {
+		const idleActions = this.actions.filter((action) => action.substr(0, 4) === 'Idle');
+		this.play(idleActions[Math.floor(Math.random() * idleActions.length)]);
+	}
+
 	setFrame(x: number, y: number) {
 		const { width, height } = this._config.frameSize;
 		if (x % width !== 0 || y % height !== 0) {
