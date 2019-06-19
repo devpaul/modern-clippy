@@ -103,8 +103,8 @@ export class Agent extends HTMLElement {
 		if (x % width !== 0 || y % height !== 0) {
 			console.warn(`frame ${x},${y} is not a multiple of frame size ${width},${height}`);
 		}
-		this._agentNode.style.backgroundPositionX = x + 'px';
-		this._agentNode.style.backgroundPositionY = y + 'px';
+		this._agentNode.style.backgroundPositionX = -x + 'px';
+		this._agentNode.style.backgroundPositionY = -y + 'px';
 	}
 
 	stop() {

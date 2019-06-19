@@ -4,6 +4,7 @@
   "description": "modern implementations of a JS Clippy",
   "main": "index.js",
   "scripts": {
+    "build": "cd packages/agents && npm run build && cd ../common && npm run build && cd ../webcomponents && npm run build",
     "precommit": "lint-staged",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
