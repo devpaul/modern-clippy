@@ -2,13 +2,11 @@ import { AnimationDefinition, BranchDefinition, FrameDefinition } from 'modern-c
 import { sleep } from './util/sleep';
 
 function pickRandom(branches: BranchDefinition['branches']) {
-	const totalWeight = branches.reduce((weight, branch) => {
-		return branch.weight + weight;
-	}, 0);
-	const pick = Math.random() * totalWeight;
+	let pick = Math.random() * 100;
 
 	for (const branch of branches) {
-		if (branch.weight >= pick) {
+		pick -= branch.weight;
+		if (pick <= 0) {
 			return branch.frameIndex;
 		}
 	}
