@@ -14,6 +14,17 @@ const config: webpack.Configuration = {
 	module: {
 		rules: [
 			{
+				test: /\.html$/,
+				use: [
+					{
+						loader: 'html-loader',
+						options: {
+							minimize: true
+						}
+					}
+				]
+			},
+			{
 				test: /\.ts$/,
 				use: 'ts-loader',
 				exclude: /node_modules/
