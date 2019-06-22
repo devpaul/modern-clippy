@@ -11,6 +11,7 @@ Modern Clippy is a reimplementation of Clippy using Web Components
 # Attributes
 
 * `mute` if sound is muted
+* `bundle` loads a json art bundle
 
 ## Properties
 

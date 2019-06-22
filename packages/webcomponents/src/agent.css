@@ -1,0 +1,46 @@
+.root {
+	position: relative;
+}
+
+#speech {
+	visibility: hidden;
+	position: absolute;
+	display: block;
+	background-color: #FFC;
+	padding: 8px;
+	z-index: 1000;
+	border: 1px solid black;
+	border-radius: 5px;
+}
+
+.speech-bubble-left:after {
+	content: '';
+	position: absolute;
+	right: 0;
+	top: 50%;
+	width: 0;
+	height: 0;
+	border: 20px solid transparent;
+	border-left-color: #ffffbb;
+	border-right: 0;
+	border-bottom: 0;
+	margin-top: -10px;
+	margin-right: -20px;
+}
+
+.content {
+	max-width: 200px;
+	min-width: 120px;
+	font-family: "Microsoft Sans", sans-serif;
+	font-size: 10pt;
+}
+
+#overlays {
+	position: relative;
+}
+
+#overlays > * {
+	position: absolute;
+	top: 0;
+	left: 0;
+}

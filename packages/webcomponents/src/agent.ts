@@ -2,6 +2,9 @@ import { AgentConfiguration, FrameImages } from 'modern-clippy';
 import { animator } from '../../common/output/animator';
 import audio, { SoundBoard } from '../../common/output/coreAudio';
 
+const agentStyle: string = require('./agent.css').default;
+const templateString: string = require('./agent.html');
+
 function throwIfNull<T = any>(value: T | null | undefined, message: string): T {
 	if (value == null) {
 		throw new Error(message);
@@ -18,22 +21,28 @@ export class Agent extends HTMLElement {
 	private _soundBoard!: SoundBoard;
 
 	static get observedAttributes() {
-		return ['mute'];
+		return ['bundle', 'mute'];
 	}
 
 	constructor() {
 		super();
 
 		const shadow = this.attachShadow({ mode: 'open' });
+
 		const template = document.createElement('template');
-		template.innerHTML = require('./agent.html');
+		template.innerHTML = templateString;
 		const root = template.content.cloneNode(true) as HTMLElement;
+
 		this._overlays = throwIfNull(root.querySelector('#overlays'), 'missing overlay container') as HTMLElement;
 		this._speech = throwIfNull(root.querySelector('#speech'), 'missing speech container') as HTMLElement;
 		throwIfNull(root.querySelector('slot'), 'missing slot').addEventListener('slotchange', (event) => {
 			this._onSlotChange(event);
 		});
 
+		const style = document.createElement('style');
+		style.textContent = agentStyle;
+
+		shadow.appendChild(style);
 		shadow.appendChild(root);
 	}
 
@@ -47,13 +56,21 @@ export class Agent extends HTMLElement {
 
 	attributeChangedCallback(name: string, _oldValue: string, newValue: string) {
 		switch (name) {
+			case 'bundle':
+				this.load(newValue);
+				break;
 			case 'mute':
 				this._mute = newValue === 'true';
 				break;
 		}
 	}
 
-	async load(config: AgentConfiguration) {
+	async load(config: AgentConfiguration | string) {
+		if (typeof config === 'string') {
+			console.log(`loading ${config} bundle`);
+			const result = await fetch(config);
+			config = (await result.json()) as AgentConfiguration;
+		}
 		this._config = config;
 		while (this._overlays.firstChild) {
 			this._overlays.removeChild(this._overlays.firstChild);
