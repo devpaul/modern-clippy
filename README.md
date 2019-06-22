@@ -6,6 +6,8 @@ Modern Clippy is a reimplementation of Clippy using Web Components
 
 ![Screenshot](./docs/screenshot.png)
 
+[Try it out now](https://devpaul.github.io/modern-clippy/). API is below. Open the developer console and watch Clippy move!
+
 # Component APIs
 
 # Attributes
@@ -40,17 +42,6 @@ Modern Clippy is a reimplementation of Clippy using Web Components
 	* exit gracefully from the current animation
 * stopImmediately()
 	* exit immediately from the current animation and return to idle
-
-### Speech Functions
-
-* say(string);
-	* shows a speech bubble with the provided string
-* sayChoices(... string);
-	* gives a list of choices for the user to select from
-* sayQuestion(string, ... responses: string);
-	* shows a speech bubble with text and a list of single word responses
-* silence()
-	* closes any open dialog
 
 ## Slots
 
