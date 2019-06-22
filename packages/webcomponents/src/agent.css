@@ -2,56 +2,102 @@
 	--bg-color: #FFC;
 	--border-color: black;
 	--text-color: #333;
-	--after-border-top: 13px;
-	--after-border-bottom: 0px;
-	--before-border-top: 20px;
-	--before-border-bottom: 0px;
-	--before-left: 40px;
-	--before-border-left: 20px;
-	--after-border-left: 13px;
+	--triangle-height: 13px;
+	--triangle-base: 26px;
+	--triangle-placement: 40px;
+	--triangle-vertical-placement: 10px;
+	--triangle-border: 1px;
+	--speech-min-width: 40px;
+	--speech-min-height: 40px;
 }
 
 .root {
 	position: relative;
 }
 
+#overlays {
+	position: relative;
+}
+
+#overlays > * {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+/* =========================================================================================================
+ * SPEECH BUBBLE
+*/
+
 #speech {
 	visibility: hidden;
 	position: absolute;
 	display: block;
 	z-index: 1000;
+	min-width: var(--speech-min-width);
+	min-height: var(--speech-min-height)
 }
 
 .bubble {
 	position: relative;
 	padding: 15px;
 	margin: 1em 0 3em;
-	border: 1px solid var(--border-color);
+	border: var(--triangle-border) solid var(--border-color);
 	color: var(--text-color);
 	background: var(--bg-color);
 	border-radius: 10px;
 }
 
-.bubble:before {
+/* BOTTOM TRIANGLE */
+
+/* outer triangle border */
+.bottom.bubble:before {
 	content: "";
 	position: absolute;
-	bottom: calc(-1 * (var(--before-border-top) + var(--before-border-bottom))); /* -20px */
-	left: var(--before-left); /* controls horizontal position */
-	border-width: var(--before-border-top) var(--before-border-left) var(--before-border-bottom);
+	bottom: calc(-1 * (var(--triangle-height) + var(--triangle-border)));
+	left: var(--triangle-placement);
+	border-width: calc(var(--triangle-height) + var(--triangle-border)) calc(var(--triangle-border) + var(--triangle-base) / 2) 0;
 	border-style: solid;
 	border-color: var(--border-color) transparent;
 }
 
 /* creates the smaller  triangle */
-.bubble:after {
+.bottom.bubble:after {
 	content: "";
 	position: absolute;
-	bottom: calc(-1 * (var(--after-border-top) + var(--after-border-bottom))); /* -13px */
-	left: calc(var(--before-left) + var(--before-border-left) - var(--after-border-left)); /* 47px */
-	border-width: var(--after-border-top) var(--after-border-top) var(--after-border-bottom);
+	bottom: calc(-1 * var(--triangle-height));
+	left: calc(var(--triangle-placement) + var(--triangle-border));
+	border-width: var(--triangle-height) calc(var(--triangle-base) / 2) 0;
 	border-style: solid;
 	border-color: var(--bg-color) transparent;
 }
+
+/* LEFT TRIANGLE */
+
+.left.bubble:before {
+	content: "";
+	position: absolute;
+	top: var(--triangle-vertical-placement);
+	left: calc(-1 * (var(--triangle-height) + var(--triangle-border)));
+	border-width: calc(var(--triangle-border) + var(--triangle-base) / 2) calc(var(--triangle-height) + var(--triangle-border)) calc(var(--triangle-border) + var(--triangle-base) / 2) 0;
+	border-style: solid;
+	border-color: transparent var(--border-color) transparent;
+}
+
+.left.bubble:after {
+	content: "";
+	position: absolute;
+	top: calc(var(--triangle-vertical-placement) + var(--triangle-border));
+	left: calc(-1 * var(--triangle-height));
+	border-width: 50px 145px 50px 0;
+	border-width: calc(var(--triangle-base) / 2) var(--triangle-height) calc(var(--triangle-base) / 2) 0;
+	border-style: solid;
+	border-color: transparent var(--bg-color) transparent;
+}
+
+/* RIGHT TRIANGLE */
+
+/* TOP TRIANGLE */
 
 .speech-bubble-left:after {
 	content: '';
@@ -66,21 +112,4 @@
 	border-bottom: 0;
 	margin-top: -10px;
 	margin-right: -20px;
-}
-
-.content {
-	max-width: 200px;
-	min-width: 120px;
-	font-family: "Microsoft Sans", sans-serif;
-	font-size: 10pt;
-}
-
-#overlays {
-	position: relative;
-}
-
-#overlays > * {
-	position: absolute;
-	top: 0;
-	left: 0;
 }

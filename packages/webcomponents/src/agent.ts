@@ -158,8 +158,9 @@ export class Agent extends HTMLElement {
 	}
 
 	private _onSlotChange(event: Event) {
-		this._speech.style.visibility = 'visible';
-		console.log('slot', event);
+		const slot = event.target as HTMLSlotElement;
+		this._speech.style.visibility = slot.assignedElements().length ? 'visible' : 'hidden';
+		this._speech.style.left = this._config.frameSize.width * 0.75 + 'px';
 	}
 
 	private _setFrame(x: number, y: number, overlay: number = 0) {
