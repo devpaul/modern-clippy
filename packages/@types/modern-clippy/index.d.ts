@@ -23,6 +23,21 @@ export interface AgentConfiguration {
 	 * Sounds to use with the agent animations
 	 */
 	soundPack: SoundConfiguration;
+	/**
+	 * License information for the bundle. Will be printed to the console when the bundle is loaded.
+	 */
+	license?: string;
+}
+
+export interface BuildConfiguration extends Omit<AgentConfiguration, 'soundPack'> {
+	/**
+	 * A relative path to the character map image
+	 */
+	characterMap: string;
+	/**
+	 * A set of key/globs used by the builder to add audio as data urls
+	 */
+	soundPack: { [key: string]: string };
 }
 
 export interface AnimationMap<S extends SoundPack = SoundPack> {
