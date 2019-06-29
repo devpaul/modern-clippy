@@ -1,0 +1,17 @@
+{
+	"extends": "../tsconfig.json",
+	"compilerOptions": {
+		"baseUrl": ".",
+		"declaration": true,
+		"declarationDir": "output/bundles",
+		"esModuleInterop": true,
+		"module": "commonjs",
+		"outDir": "output",
+		"sourceMap": true,
+		"target": "es2015",
+		"paths": {
+			"modern-clippy": [ "../@types/modern-clippy" ]
+		}
+	},
+	"include": [ "./src" ]
+}
