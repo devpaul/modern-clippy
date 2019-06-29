@@ -1,0 +1,135 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "AnimationDefinition<S>": {
+            "properties": {
+                "frames": {
+                    "items": {
+                        "$ref": "#/definitions/FrameDefinition<S>"
+                    },
+                    "type": "array"
+                },
+                "useExitBranching": {
+                    "type": "boolean"
+                }
+            },
+            "type": "object"
+        },
+        "AnimationMap<SoundPack>": {
+            "additionalProperties": {
+                "$ref": "#/definitions/AnimationDefinition<S>"
+            },
+            "type": "object"
+        },
+        "BranchDefinition": {
+            "properties": {
+                "branches": {
+                    "items": {
+                        "properties": {
+                            "frameIndex": {
+                                "type": "number"
+                            },
+                            "weight": {
+                                "type": "number"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "FrameDefinition<S>": {
+            "properties": {
+                "branching": {
+                    "$ref": "#/definitions/BranchDefinition"
+                },
+                "duration": {
+                    "type": "number"
+                },
+                "exitBranch": {
+                    "type": "number"
+                },
+                "images": {
+                    "items": {
+                        "additionalItems": {
+                            "anyOf": [
+                                {
+                                    "type": "number"
+                                },
+                                {
+                                    "type": "number"
+                                }
+                            ]
+                        },
+                        "items": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "number"
+                            }
+                        ],
+                        "minItems": 2,
+                        "type": "array"
+                    },
+                    "type": "array"
+                },
+                "sound": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "SoundConfiguration": {
+            "additionalProperties": {
+                "$ref": "#/definitions/SoundPack"
+            },
+            "type": "object"
+        },
+        "SoundPack": {
+            "additionalProperties": {
+                "type": "string"
+            },
+            "type": "object"
+        }
+    },
+    "description": "The AgentConfiguration contains all configuration options needed to fully describe an agent",
+    "properties": {
+        "animations": {
+            "$ref": "#/definitions/AnimationMap<SoundPack>",
+            "description": "Describes frames and frame timing used to produce named animations"
+        },
+        "characterMap": {
+            "description": "The character map to display the agent",
+            "type": "string"
+        },
+        "frameSize": {
+            "description": "The size of the character",
+            "properties": {
+                "height": {
+                    "type": "number"
+                },
+                "width": {
+                    "type": "number"
+                }
+            },
+            "type": "object"
+        },
+        "license": {
+            "description": "License information for the bundle. Will be printed to the console when the bundle is loaded.",
+            "type": "string"
+        },
+        "overlayCount": {
+            "description": "The number of frames used to render a character. Usually this is `1` but more complicated\ncharacters can use multiple frames to produce effects",
+            "type": "number"
+        },
+        "soundPack": {
+            "$ref": "#/definitions/SoundConfiguration",
+            "description": "Sounds to use with the agent animations"
+        }
+    },
+    "type": "object"
+}
+

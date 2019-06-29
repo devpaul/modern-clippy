@@ -65,7 +65,7 @@ export interface FrameDefinition<S extends SoundPack = SoundPack> {
 	branching?: BranchDefinition;
 	duration: number;
 	images?: FrameImages;
-	sound?: keyof S;
+	sound?: string;
 	exitBranch?: number;
 }
 

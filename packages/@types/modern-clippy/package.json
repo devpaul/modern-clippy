@@ -4,12 +4,13 @@
   "description": "Shared Typings for Clippy",
   "types": "./index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build:config": "typescript-json-schema -o modern-clippy.schema.json ./tsconfig.json AgentConfiguration",
     "test": "tsc"
   },
   "author": "Paul Shannon",
   "license": "MPL-2.0",
-  "dependencies": {
-    "typescript": "^3.5.2"
+  "devDependencies": {
+    "typescript": "^3.5.2",
+    "typescript-json-schema": "^0.38.3"
   }
 }
