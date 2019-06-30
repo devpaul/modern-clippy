@@ -32,7 +32,7 @@ Modern Clippy is a reimplementation of Clippy using Web Components
 
 ## Functions
 
-* load(config: AgentConfiguration);
+* load(config: AgentConfiguration | string);
 	* loads an AgentConfiguration
 * play(name: string)
 	* play a specific action
