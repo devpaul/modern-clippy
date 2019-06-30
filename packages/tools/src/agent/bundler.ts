@@ -78,6 +78,3 @@ export async function build(
 	});
 	console.log(`bundled ${configFile} to ${output}`);
 }
-
-const file = join(process.cwd(), '..', 'agents', 'src', 'clippy');
-build(file);

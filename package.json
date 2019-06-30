@@ -4,9 +4,13 @@
   "description": "modern implementations of a JS Clippy",
   "main": "index.js",
   "scripts": {
-    "build": "cd packages/agents && npm run build && cd ../common && npm run build && cd ../webcomponents && npm run build & cd ..",
+    "build": "npm run build:tools && npm run build:agents && npm run build:webcomponents",
+    "build:agents": "cd packages/agents && npm run build && cd ../..",
+    "build:tools": "cd packages/tools && npm run build && cd ../..",
+    "build:webcomponents": "cd packages/webcomponents && npm run build && cd ../..",
     "precommit": "lint-staged",
     "publish:example": "npm run build && ts-node ./support/publish",
+    "start": "webserv",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Paul Shannon",
@@ -27,5 +31,8 @@
     "prettier": "^1.18.2",
     "ts-node": "^8.3.0",
     "typescript": "^3.4.5"
+  },
+  "dependencies": {
+    "webserv": "^0.12.0"
   }
 }

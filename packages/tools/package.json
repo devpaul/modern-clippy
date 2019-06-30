@@ -1,4 +1,7 @@
 {
+  "bin": {
+    "bundle": "output/cli"
+  },
   "name": "modern-clippy-bundler",
   "version": "1.0.0",
   "description": "Creates JSON bundles from TS AgentConfiguration",
@@ -17,9 +20,11 @@
     "ts-node": "^8.3.0"
   },
   "dependencies": {
+    "@types/yargs": "^13.0.0",
     "glob": "^7.1.4",
     "mime": "^2.4.4",
     "tsconfig-paths": "^3.8.0",
-    "typescript": "^3.5.2"
+    "typescript": "^3.5.2",
+    "yargs": "^13.2.4"
   }
 }

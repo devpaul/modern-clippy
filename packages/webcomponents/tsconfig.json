@@ -8,7 +8,8 @@
 			"modern-clippy": [ "../@types/modern-clippy" ]
 		},
 		"sourceMap": true,
-		"target": "es2015"
+		"target": "es2015",
+		"resolveJsonModule": true
 	},
 	"exclude": [
 		"webpack.config.ts"

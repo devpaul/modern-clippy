@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "Agent assets and configurations",
   "scripts": {
-    "build": "node ./_support/build",
+    "build": "npm run build:clippy && npm run build:links && npm run build:merlin && npm run build:rover",
+    "build:clippy": "node ../tools/output/cli build ./src/clippy",
+    "build:links": "node ../tools/output/cli build ./src/links",
+    "build:merlin": "node ../tools/output/cli build ./src/merlin",
+    "build:rover": "node ../tools/output/cli build ./src/rover",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Paul Shannon",
