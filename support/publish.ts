@@ -6,7 +6,7 @@ ghpages.publish(
 	baseDir,
 	{
 		push: true,
-		src: ['index.html', './packages/webcomponents/output/*']
+		src: ['index.html', './packages/webcomponents/output/*', './packages/agents/output/*.json']
 	},
 	() => {
 		console.log('Published')!;

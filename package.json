@@ -31,9 +31,7 @@
     "lint-staged": "^8.2.0",
     "prettier": "^1.18.2",
     "ts-node": "^8.3.0",
-    "typescript": "^3.4.5"
-  },
-  "dependencies": {
+    "typescript": "^3.4.5",
     "webserv": "^0.12.0"
   }
 }
