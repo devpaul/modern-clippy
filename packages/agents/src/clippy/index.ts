@@ -7,7 +7,8 @@ export const config: BuildConfiguration = {
 	frameSize: { width: 124, height: 93 },
 	overlayCount: 1,
 	soundPack: {
-		mp3: './assets/*.mp3'
+		mp3: './assets/*.mp3',
+		ogg: './assets/*.ogg'
 	},
 	license: 'Unlicensed; used under fair use'
 };

@@ -5,7 +5,7 @@ const sources = [
 	'https://raw.githubusercontent.com/smore-inc/clippy.js/master/agents/Clippy/sounds-mp3.js',
 	'https://raw.githubusercontent.com/smore-inc/clippy.js/master/agents/Clippy/sounds-ogg.js',
 	'https://raw.githubusercontent.com/smore-inc/clippy.js/master/agents/Merlin/sounds-mp3.js',
-	'https://raw.githubusercontent.com/smore-inc/clippy.js/master/agents/Merlin/sounds-mp3.js',
+	'https://raw.githubusercontent.com/smore-inc/clippy.js/master/agents/Merlin/sounds-ogg.js',
 	'https://raw.githubusercontent.com/smore-inc/clippy.js/master/agents/Links/sounds-mp3.js',
 	'https://raw.githubusercontent.com/smore-inc/clippy.js/master/agents/Links/sounds-ogg.js',
 	'https://raw.githubusercontent.com/smore-inc/clippy.js/master/agents/Rover/sounds-mp3.js',

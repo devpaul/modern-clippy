@@ -38,7 +38,9 @@ function assertQuote(text: string, pos: number) {
 }
 
 export function decode(data: string, filename: string) {
-	const b = new Buffer(data, 'base64');
+	const separator = data.indexOf(',');
+	const contents = data.slice(separator + 1);
+	const b = new Buffer(contents, 'base64');
 	console.log(`Writing ${filename}`);
 	writeFileSync(filename, b);
 }

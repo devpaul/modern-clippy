@@ -3,6 +3,8 @@ import { register } from 'ts-node';
 import { join, dirname, basename, extname } from 'path';
 import glob from 'glob';
 import { readFile, writeFile, mkdirSync, lstatSync } from 'fs';
+import { getType } from 'mime';
+import { isAgentConfiguration, isBuildConfiguration } from '../../../common/output/validate';
 
 const baseUrl = process.cwd();
 
@@ -13,68 +15,114 @@ register({
 	}
 });
 
-function isBuildConfiguration(data: any): data is BuildConfiguration {
-	return typeof data === 'object';
-}
-
-export function load(file: string): unknown {
-	console.log(`loading config ${file}`);
-	const config = require(file);
-	return config.default || config.config || config;
-}
-
-async function buildSound(config: BuildConfiguration, cwd: string): Promise<AgentConfiguration> {
-	const soundPack: SoundConfiguration = {};
-
-	for (const [key, value] of Object.entries(config.soundPack)) {
-		console.log(`loading glob "${value} from ${cwd}`);
-		const files: string[] = await new Promise((resolve, reject) => {
-			glob(value, { cwd }, (err, files) => {
-				err ? reject(err) : resolve(files);
-			});
+function asyncGlob(value: string, cwd: string) {
+	return new Promise<string[]>((resolve, reject) => {
+		glob(value, { cwd }, (err, files) => {
+			err ? reject(err) : resolve(files);
 		});
-		soundPack[key] = await processSoundPack(files.map((file) => join(cwd, file)));
-	}
-	return { ...config, soundPack };
+	});
 }
 
-async function processSoundPack(files: string[]): Promise<SoundPack> {
-	const pack: SoundPack = {};
-	for (let file of files) {
-		const name = basename(file, extname(file));
-		const contents = await new Promise<Buffer>((resolve, reject) => {
-			readFile(file, (err, data) => {
-				err ? reject(err) : resolve(data);
-			});
+function asyncReadFile(file: string) {
+	return new Promise<Buffer>((resolve, reject) => {
+		readFile(file, (err, data) => {
+			err ? reject(err) : resolve(data);
 		});
-		pack[name] = contents.toString('base64');
-	}
-	return pack;
+	});
 }
 
-export function bundle(configFile: string) {
-	const basePath = isDirectory(configFile) ? configFile : dirname(configFile);
-	const loaded = load(configFile);
-	if (!isBuildConfiguration(loaded)) {
-		throw new Error('not a proper build configuration');
-	}
-	return buildSound(loaded, basePath);
+function asyncWriteConfig(target: string, config: AgentConfiguration) {
+	return new Promise((resolve, reject) => {
+		writeFile(target, JSON.stringify(config), (err) => {
+			err ? reject(err) : resolve(config);
+		});
+	});
 }
 
 function isDirectory(path: string) {
 	return lstatSync(path).isDirectory();
 }
 
+function makeDataUrl(mimeType: string, contents: Buffer) {
+	return `data:${mimeType};base64,${contents.toString('base64')}`;
+}
+
+export class Bundler {
+	private basePath: string;
+	constructor(private configFile: string) {
+		this.basePath = isDirectory(configFile) ? configFile : dirname(configFile);
+	}
+
+	async build() {
+		const config = this.load();
+		if (!isBuildConfiguration(config)) {
+			throw new Error('not a proper build configuration');
+		}
+
+		const [soundPack, characterMap] = await Promise.all([
+			this.buildSound(config.soundPack),
+			this.buildCharacterMap(config.characterMap)
+		]);
+
+		return {
+			...config,
+			soundPack,
+			characterMap
+		};
+	}
+
+	private async buildCharacterMap(config: BuildConfiguration['characterMap']) {
+		const path = join(this.basePath, config);
+		console.log(`loading character map ${path}`);
+		const png = await asyncReadFile(path);
+		const mimeType = getType(config) || 'png';
+		return makeDataUrl(mimeType, png);
+	}
+
+	private async buildSound(config: BuildConfiguration['soundPack']): Promise<AgentConfiguration['soundPack']> {
+		const soundPack: SoundConfiguration = {};
+
+		for (const [key, value] of Object.entries(config)) {
+			console.log(`loading glob "${value} from ${this.basePath}`);
+			const mimeType = getType(key);
+			const files = await asyncGlob(value, this.basePath);
+			soundPack[key] = await this.processSoundPack(
+				files.map((file) => join(this.basePath, file)),
+				mimeType || ''
+			);
+		}
+		return soundPack;
+	}
+
+	private async processSoundPack(files: string[], mimeType: string): Promise<SoundPack> {
+		const pack: SoundPack = {};
+		for (let file of files) {
+			const name = basename(file, extname(file));
+			const contents = await asyncReadFile(file);
+			pack[name] = makeDataUrl(mimeType, contents);
+		}
+		return pack;
+	}
+
+	private load(): unknown {
+		console.log(`loading config ${this.configFile}`);
+		const config = require(this.configFile);
+		return config.default || config.config || config;
+	}
+}
+
 export async function build(
 	configFile: string,
 	output: string = join(process.cwd(), 'output', basename(configFile, extname(configFile)) + '.json')
 ) {
-	const config = await bundle(configFile);
+	const bundler = new Bundler(configFile);
+	const config = await bundler.build();
+
+	if (!isAgentConfiguration(config)) {
+		throw new Error('Build failed to create a valid agent configuration');
+	}
+
 	mkdirSync(dirname(output), { recursive: true });
-	await new Promise((resolve, reject) => {
-		writeFile(output, JSON.stringify(config), (err) => {
-			err ? reject(err) : resolve(config);
-		});
-	});
+	await asyncWriteConfig(output, config);
 	console.log(`bundled ${configFile} to ${output}`);
 }

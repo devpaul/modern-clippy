@@ -4,8 +4,9 @@
   "description": "modern implementations of a JS Clippy",
   "main": "index.js",
   "scripts": {
-    "build": "npm run build:tools && npm run build:agents && npm run build:webcomponents",
+    "build": "npm run build:common && npm run build:tools && npm run build:agents && npm run build:webcomponents",
     "build:agents": "cd packages/agents && npm run build && cd ../..",
+    "build:common": "cd packages/common && npm run build && cd ../..",
     "build:tools": "cd packages/tools && npm run build && cd ../..",
     "build:webcomponents": "cd packages/webcomponents && npm run build && cd ../..",
     "precommit": "lint-staged",
