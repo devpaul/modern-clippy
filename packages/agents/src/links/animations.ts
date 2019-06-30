@@ -1,7 +1,6 @@
 import { AnimationMap } from 'modern-clippy';
-import { mp3 } from './assets';
 
-export const animations: AnimationMap<typeof mp3> = {
+export const animations: AnimationMap = {
 	IdleTailWagA: {
 		frames: [
 			{

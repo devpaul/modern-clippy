@@ -37,8 +37,7 @@ function assertQuote(text: string, pos: number) {
 	return ++pos;
 }
 
-function decode(data: string, filename: string) {
-	writeFileSync;
+export function decode(data: string, filename: string) {
 	const b = new Buffer(data, 'base64');
 	console.log(`Writing ${filename}`);
 	writeFileSync(filename, b);
@@ -70,7 +69,7 @@ async function load(source: string): Promise<string> {
 	});
 }
 
-async function rip(source: string, type: string, destination: string) {
+export async function rip(source: string, type: string, destination: string) {
 	mkdirSync(destination, { recursive: true });
 	const text = stripWrapping(await load(source));
 	demapper(text, type, destination);

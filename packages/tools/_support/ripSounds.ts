@@ -1,4 +1,4 @@
-import rip from '../src/soundRipper';
+import rip from '../src/sound/ripper';
 import { join } from 'path';
 
 const sources = [

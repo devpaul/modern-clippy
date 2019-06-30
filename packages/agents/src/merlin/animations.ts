@@ -1,7 +1,6 @@
 import { AnimationMap } from 'modern-clippy';
-import { mp3 } from './assets';
 
-export const animations: AnimationMap<typeof mp3> = {
+export const animations: AnimationMap = {
 	MoveLeft: {
 		frames: [
 			{ duration: 100, images: [[0, 0]], exitBranch: 19 },

@@ -1,15 +1,15 @@
-import { AgentConfiguration } from 'modern-clippy';
+import { BuildConfiguration } from 'modern-clippy';
 import { animations } from './animations';
-import { mp3, characterMap } from './assets';
 
-export const config: AgentConfiguration = {
+export const config: BuildConfiguration = {
 	animations,
-	characterMap,
+	characterMap: './assets/map.png',
 	frameSize: { width: 128, height: 128 },
 	overlayCount: 3,
 	soundPack: {
-		mp3
-	}
+		mp3: './assets/*.mp3'
+	},
+	license: 'Unlicensed; used under fair use'
 };
 
 export default config;

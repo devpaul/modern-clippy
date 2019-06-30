@@ -2,10 +2,9 @@
   "name": "modern-clippy-bundler",
   "version": "1.0.0",
   "description": "Creates JSON bundles from TS AgentConfiguration",
-  "main": "src",
+  "main": "output",
   "scripts": {
-    "build": "ts-node . ../agents/src/**",
-    "build:clippy": "ts-node . ../agents/src/clippy",
+    "build": "tsc",
     "getSound": "ts-node ./_support/ripSounds"
   },
   "author": "",
@@ -19,6 +18,8 @@
   },
   "dependencies": {
     "glob": "^7.1.4",
-    "mime": "^2.4.4"
+    "mime": "^2.4.4",
+    "tsconfig-paths": "^3.8.0",
+    "typescript": "^3.5.2"
   }
 }
