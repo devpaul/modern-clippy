@@ -3,11 +3,11 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"declaration": true,
-		"outDir": "output",
+		"outDir": "output/esm",
 		"paths": {
 			"modern-clippy": [ "../@types/modern-clippy" ]
 		},
-		"module": "umd",
+		"module": "es2015",
 		"target": "es2015"
 	}
 }

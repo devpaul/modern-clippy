@@ -39,20 +39,22 @@ export class CoreAudio {
 		this.context.resume();
 	}
 
-	load(config: SoundConfiguration) {
-		const { mp3, ogg, ...rest } = config;
-		if (mp3 && this.canPlay('mp3')) {
-			return this.loadSoundPack(mp3);
-		} else if (ogg && this.canPlay('ogg')) {
-			return this.loadSoundPack(ogg);
-		}
-		for (let format in rest) {
-			if (this.canPlay(format)) {
-				return this.loadSoundPack(rest[format]);
+	async load(config: SoundConfiguration) {
+		const effects: Effects = {};
+		Object.keys(config).forEach(async (type) => {
+			const pack = config[type];
+			if (this.canPlay(type)) {
+				console.log('loading ' + type);
+				await this.loadSoundPack(effects, pack);
 			}
-		}
+		});
+		return new SoundBoard(this.context, effects);
+	}
 
-		return Promise.reject(new Error('Cannot load audio. No valid type.'));
+	private async loadSound(src: string) {
+		const data = await fetch(src);
+		const buffer = await data.arrayBuffer();
+		return this.context.decodeAudioData(buffer);
 	}
 
 	private canPlay(format: string) {
@@ -60,21 +62,18 @@ export class CoreAudio {
 		return audioTag.canPlayType(mimetype);
 	}
 
-	private loadSoundPack(pack: SoundPack): Promise<SoundBoard> {
-		const effects: Effects = {};
-		const promises = Object.keys(pack).map((id) => {
-			const src = pack[id];
-			return new Promise(async (resolve) => {
-				const data = await fetch(src);
-				const buffer = await data.arrayBuffer();
-				const audio = await this.context.decodeAudioData(buffer);
-				effects[id] = audio;
-				resolve(audio);
-			});
-		});
-		return Promise.all(promises).then(() => {
-			return new SoundBoard(this.context, effects);
-		});
+	private loadSoundPack(effects: Effects, pack: SoundPack): Promise<any> {
+		return Promise.all(
+			Object.keys(pack).map(async (id) => {
+				if (!effects[id]) {
+					try {
+						effects[id] = await this.loadSound(pack[id]);
+					} catch (e) {
+						console.warn(`failed to load audio ${id}`);
+					}
+				}
+			})
+		);
 	}
 }
 

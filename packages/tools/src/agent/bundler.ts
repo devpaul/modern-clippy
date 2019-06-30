@@ -4,7 +4,7 @@ import { join, dirname, basename, extname } from 'path';
 import glob from 'glob';
 import { readFile, writeFile, mkdirSync, lstatSync } from 'fs';
 import { getType } from 'mime';
-import { isAgentConfiguration, isBuildConfiguration } from '../../../common/output/validate';
+import { isAgentConfiguration, isBuildConfiguration } from '../../../common/output/cjs/validate';
 
 const baseUrl = process.cwd();
 

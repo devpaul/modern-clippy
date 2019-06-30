@@ -1,6 +1,6 @@
 import { AgentConfiguration, FrameImages } from 'modern-clippy';
-import { animator } from '../../common/src/animator';
-import audio, { SoundBoard } from '../../common/src/coreAudio';
+import { animator } from '../../common/output/esm/animator';
+import audio, { SoundBoard } from '../../common/output/esm/coreAudio';
 
 const agentStyle: string = require('./agent.css').default;
 const templateString: string = require('./agent.html');

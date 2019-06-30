@@ -4,7 +4,9 @@
   "description": "Common files across implementations",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc",
+    "build:cjs": "tsc -p ./tsconfig.cjs.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Paul Shannon",
