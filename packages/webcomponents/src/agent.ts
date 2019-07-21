@@ -1,38 +1,11 @@
 import { AgentConfiguration, FrameImages } from 'modern-clippy';
 import { animator } from '../../common/output/esm/animator';
 import audio, { SoundBoard } from '../../common/output/esm/coreAudio';
+import { isRelativePosition, parsePosition, getPosition, DialogPosition } from './dialog';
+import { loadStyles, loadTemplate } from './template';
 
-const agentStyle: string = require('./agent.css').default;
-const templateString: string = require('./agent.html');
-
-type DialogPosition = 'left' | 'right' | 'top' | 'bottom';
-
-function throwIfNull<T = any>(value: T | null | undefined, message: string): T {
-	if (value == null) {
-		throw new Error(message);
-	}
-	return value;
-}
-
-function isValidPosition(value: string): value is DialogPosition {
-	return value === 'left' || value === 'right' || value === 'top' || value === 'bottom';
-}
-
-function loadTemplate() {
-	const template = document.createElement('template');
-	template.innerHTML = templateString;
-	const root = template.content.cloneNode(true) as HTMLElement;
-
-	throwIfNull(root.querySelector('#overlays'), 'missing overlay container');
-	throwIfNull(root.querySelector('#speech'), 'missing speech container');
-	throwIfNull(root.querySelector('slot'), 'missing slot');
-	return root;
-}
-
-function loadStyles() {
-	const style = document.createElement('style');
-	style.textContent = agentStyle;
-	return style;
+function cssPx(pos?: number) {
+	return pos != null ? `${pos}px` : null;
 }
 
 export class Agent extends HTMLElement {
@@ -49,16 +22,14 @@ export class Agent extends HTMLElement {
 		super();
 
 		const shadow = this.attachShadow({ mode: 'open' });
-		const root = loadTemplate();
 		shadow.appendChild(loadStyles());
-		shadow.appendChild(root);
+		shadow.appendChild(loadTemplate());
 
 		const speechSlot = this._speech.querySelector('slot');
 		speechSlot &&
 			speechSlot.addEventListener('slotchange', (event) => {
 				this._onSlotChange(event);
 			});
-		this._setDialogPosition('left');
 	}
 
 	get actions(): string[] {
@@ -78,11 +49,10 @@ export class Agent extends HTMLElement {
 				this._mute = newValue === 'true';
 				break;
 			case 'dialog':
-				if (isValidPosition(newValue)) {
-					this._setDialogPosition(newValue);
-				} else {
-					console.warn(`${newValue} is not a valid position`);
-				}
+				const position = isRelativePosition(newValue)
+					? getPosition(newValue, this._config.frameSize)
+					: parsePosition(newValue);
+				this._setDialogPosition(position);
 		}
 	}
 
@@ -99,8 +69,9 @@ export class Agent extends HTMLElement {
 		for (let i = config.overlayCount; i > 0; i--) {
 			this._createOverlay();
 		}
-		this._overlays.style.height = config.frameSize.height + 'px';
-		this._overlays.style.width = config.frameSize.width + 'px';
+		this._overlays.style.height = cssPx(config.frameSize.height);
+		this._overlays.style.width = cssPx(config.frameSize.width);
+		this._resetDialogPosition();
 		this._soundBoard = await audio.load(config.soundPack);
 		this.play('Show');
 		this.dispatchEvent(new CustomEvent('loaded'));
@@ -175,8 +146,8 @@ export class Agent extends HTMLElement {
 			frameSize: { width, height }
 		} = this._config;
 		const overlay = document.createElement('div');
-		overlay.style.width = width + 'px';
-		overlay.style.height = height + 'px';
+		overlay.style.width = cssPx(width);
+		overlay.style.height = cssPx(height);
 		overlay.style.backgroundImage = `url(${characterMap})`;
 		overlay.style.display = 'none';
 		this._overlays.appendChild(overlay);
@@ -192,21 +163,28 @@ export class Agent extends HTMLElement {
 		this._speech.style.visibility = slot.assignedElements().length ? 'visible' : 'hidden';
 	}
 
-	private _setDialogPosition(direction: DialogPosition) {
+	private _resetDialogPosition() {
+		const attributeValue = this.getAttribute('dialog');
+		if (attributeValue) {
+			try {
+				const position = isRelativePosition(attributeValue)
+					? getPosition(attributeValue, this._config.frameSize)
+					: parsePosition(attributeValue);
+				this._setDialogPosition(position);
+				return;
+			} catch (e) {}
+		}
+		this._setDialogPosition(getPosition('left', this._config.frameSize));
+	}
+
+	private _setDialogPosition(position: DialogPosition) {
 		const speech = this._speech;
 		speech.classList.remove('left', 'right', 'top', 'bottom');
-		speech.classList.add(direction);
-
-		switch (direction) {
-			case 'left':
-				break;
-			case 'right':
-				break;
-			case 'top':
-				break;
-			case 'bottom':
-				break;
-		}
+		speech.classList.add(position.placement);
+		speech.style.top = cssPx(position.top);
+		speech.style.bottom = cssPx(position.bottom);
+		speech.style.left = cssPx(position.left);
+		speech.style.right = cssPx(position.right);
 	}
 
 	private _setFrame(x: number, y: number, overlay: number = 0) {
@@ -220,8 +198,8 @@ export class Agent extends HTMLElement {
 		}
 
 		node.style.display = 'block';
-		node.style.backgroundPositionX = -x + 'px';
-		node.style.backgroundPositionY = -y + 'px';
+		node.style.backgroundPositionX = cssPx(-x);
+		node.style.backgroundPositionY = cssPx(-y);
 		node.style.position = 'absolute';
 		node.style.top = '0';
 		node.style.left = '0';

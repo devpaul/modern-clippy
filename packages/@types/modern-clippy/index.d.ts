@@ -13,7 +13,7 @@ export interface AgentConfiguration {
 	/**
 	 * The size of the character
 	 */
-	frameSize: { width: number; height: number };
+	frameSize: FrameSize;
 	/**
 	 * The number of frames used to render a character. Usually this is `1` but more complicated
 	 * characters can use multiple frames to produce effects
@@ -27,6 +27,11 @@ export interface AgentConfiguration {
 	 * License information for the bundle. Will be printed to the console when the bundle is loaded.
 	 */
 	license?: string;
+}
+
+export interface FrameSize {
+	height: number;
+	width: number;
 }
 
 export interface BuildConfiguration extends Omit<AgentConfiguration, 'soundPack'> {

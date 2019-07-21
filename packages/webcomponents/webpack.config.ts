@@ -4,11 +4,11 @@ import webpack from 'webpack';
 const config: webpack.Configuration = {
 	mode: 'production',
 	entry: {
-		agent: './src/index.ts',
-		clippy: './src/agents/clippy.ts',
-		links: './src/agents/links.ts',
-		merlin: './src/agents/merlin.ts',
-		rover: './src/agents/rover.ts'
+		agent: './src/index.ts'
+		// clippy: './src/agents/clippy.ts',
+		// links: './src/agents/links.ts',
+		// merlin: './src/agents/merlin.ts',
+		// rover: './src/agents/rover.ts'
 	},
 	devtool: 'inline-source-map',
 	output: {

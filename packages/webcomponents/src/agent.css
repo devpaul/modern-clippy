@@ -48,10 +48,10 @@
 	border-radius: 10px;
 }
 
-/* BOTTOM TRIANGLE */
+/* TOP DIALOG (bottom triangle) */
 
 /* outer triangle border */
-.bottom.bubble:before {
+.top.bubble:before {
 	content: "";
 	position: absolute;
 	bottom: calc(-1 * (var(--triangle-height) + var(--triangle-border)));
@@ -62,7 +62,7 @@
 }
 
 /* creates the smaller triangle */
-.bottom.bubble:after {
+.top.bubble:after {
 	content: "";
 	position: absolute;
 	bottom: calc(-1 * var(--triangle-height));
@@ -72,9 +72,9 @@
 	border-color: var(--bg-color) transparent;
 }
 
-/* LEFT TRIANGLE */
+/* RIGHT DIALOG (left triangle) */
 
-.left.bubble:before {
+.right.bubble:before {
 	content: "";
 	position: absolute;
 	top: var(--triangle-vertical-placement);
@@ -84,7 +84,7 @@
 	border-color: transparent var(--border-color) transparent;
 }
 
-.left.bubble:after {
+.right.bubble:after {
 	content: "";
 	position: absolute;
 	top: calc(var(--triangle-vertical-placement) + var(--triangle-border));
@@ -95,9 +95,9 @@
 	border-color: transparent var(--bg-color) transparent;
 }
 
-/* RIGHT TRIANGLE */
+/* LEFT DIALOG (right triangle) */
 
-/* TOP TRIANGLE */
+/* BOTTOM DIALOG (top triangle) */
 
 .speech-bubble-left:after {
 	content: '';
