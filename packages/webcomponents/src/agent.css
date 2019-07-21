@@ -61,7 +61,7 @@
 	border-color: var(--border-color) transparent;
 }
 
-/* creates the smaller  triangle */
+/* creates the smaller triangle */
 .bottom.bubble:after {
 	content: "";
 	position: absolute;

@@ -10,10 +10,11 @@ Modern Clippy is a reimplementation of Clippy using Web Components
 
 # Component APIs
 
-# Attributes
+## Attributes
 
 * `mute` if sound is muted
 * `bundle` loads a json art bundle
+* `dialog` describes the placement of the speech bubble for clippy: `left`, `right`, `top`, `bottom`
 
 ## Properties
 
@@ -22,6 +23,8 @@ Modern Clippy is a reimplementation of Clippy using Web Components
 
 ## Events
 
+* `loaded`
+	* emitted when a bundle has loaded
 * `actionStart`
 	* identifies when a frame starts
 * `frame`
@@ -45,5 +48,11 @@ Modern Clippy is a reimplementation of Clippy using Web Components
 
 ## Slots
 
-* `dialog` slots into the speech bubble
+* `default` slots into the speech bubble
 	* The dialog slot overrides any current speech being shown
+
+# Building
+
+## Quick Start
+
+* npm run build

@@ -5,6 +5,8 @@ import audio, { SoundBoard } from '../../common/output/esm/coreAudio';
 const agentStyle: string = require('./agent.css').default;
 const templateString: string = require('./agent.html');
 
+type DialogPosition = 'left' | 'right' | 'top' | 'bottom';
+
 function throwIfNull<T = any>(value: T | null | undefined, message: string): T {
 	if (value == null) {
 		throw new Error(message);
@@ -12,38 +14,51 @@ function throwIfNull<T = any>(value: T | null | undefined, message: string): T {
 	return value;
 }
 
+function isValidPosition(value: string): value is DialogPosition {
+	return value === 'left' || value === 'right' || value === 'top' || value === 'bottom';
+}
+
+function loadTemplate() {
+	const template = document.createElement('template');
+	template.innerHTML = templateString;
+	const root = template.content.cloneNode(true) as HTMLElement;
+
+	throwIfNull(root.querySelector('#overlays'), 'missing overlay container');
+	throwIfNull(root.querySelector('#speech'), 'missing speech container');
+	throwIfNull(root.querySelector('slot'), 'missing slot');
+	return root;
+}
+
+function loadStyles() {
+	const style = document.createElement('style');
+	style.textContent = agentStyle;
+	return style;
+}
+
 export class Agent extends HTMLElement {
-	private _overlays: HTMLElement;
-	private _speech: HTMLElement;
 	private _config!: AgentConfiguration;
 	private _control?: ReturnType<typeof animator> & { action: string };
 	private _mute = false;
 	private _soundBoard!: SoundBoard;
 
 	static get observedAttributes() {
-		return ['bundle', 'mute'];
+		return ['bundle', 'mute', 'dialog'];
 	}
 
 	constructor() {
 		super();
 
 		const shadow = this.attachShadow({ mode: 'open' });
-
-		const template = document.createElement('template');
-		template.innerHTML = templateString;
-		const root = template.content.cloneNode(true) as HTMLElement;
-
-		this._overlays = throwIfNull(root.querySelector('#overlays'), 'missing overlay container') as HTMLElement;
-		this._speech = throwIfNull(root.querySelector('#speech'), 'missing speech container') as HTMLElement;
-		throwIfNull(root.querySelector('slot'), 'missing slot').addEventListener('slotchange', (event) => {
-			this._onSlotChange(event);
-		});
-
-		const style = document.createElement('style');
-		style.textContent = agentStyle;
-
-		shadow.appendChild(style);
+		const root = loadTemplate();
+		shadow.appendChild(loadStyles());
 		shadow.appendChild(root);
+
+		const speechSlot = this._speech.querySelector('slot');
+		speechSlot &&
+			speechSlot.addEventListener('slotchange', (event) => {
+				this._onSlotChange(event);
+			});
+		this._setDialogPosition('left');
 	}
 
 	get actions(): string[] {
@@ -62,6 +77,12 @@ export class Agent extends HTMLElement {
 			case 'mute':
 				this._mute = newValue === 'true';
 				break;
+			case 'dialog':
+				if (isValidPosition(newValue)) {
+					this._setDialogPosition(newValue);
+				} else {
+					console.warn(`${newValue} is not a valid position`);
+				}
 		}
 	}
 
@@ -82,6 +103,7 @@ export class Agent extends HTMLElement {
 		this._overlays.style.width = config.frameSize.width + 'px';
 		this._soundBoard = await audio.load(config.soundPack);
 		this.play('Show');
+		this.dispatchEvent(new CustomEvent('loaded'));
 	}
 
 	play(action: string) {
@@ -139,6 +161,14 @@ export class Agent extends HTMLElement {
 		this._control && this._control.stopImmediately();
 	}
 
+	private get _overlays(): HTMLElement {
+		return this.shadowRoot!.querySelector('#overlays') as HTMLElement;
+	}
+
+	private get _speech(): HTMLElement {
+		return this.shadowRoot!.querySelector('#speech') as HTMLElement;
+	}
+
 	private _createOverlay() {
 		const {
 			characterMap,
@@ -160,7 +190,23 @@ export class Agent extends HTMLElement {
 	private _onSlotChange(event: Event) {
 		const slot = event.target as HTMLSlotElement;
 		this._speech.style.visibility = slot.assignedElements().length ? 'visible' : 'hidden';
-		this._speech.style.left = this._config.frameSize.width * 0.75 + 'px';
+	}
+
+	private _setDialogPosition(direction: DialogPosition) {
+		const speech = this._speech;
+		speech.classList.remove('left', 'right', 'top', 'bottom');
+		speech.classList.add(direction);
+
+		switch (direction) {
+			case 'left':
+				break;
+			case 'right':
+				break;
+			case 'top':
+				break;
+			case 'bottom':
+				break;
+		}
 	}
 
 	private _setFrame(x: number, y: number, overlay: number = 0) {
