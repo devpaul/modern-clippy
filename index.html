@@ -3,29 +3,117 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Modern Clippy</title>
-	<script type="text/javascript" src="./packages/webcomponents/output/index.js"></script>
-	<script type="text/javascript" src="./packages/webcomponents/output/clippy.js"></script>
-	<script type="text/javascript" src="./packages/webcomponents/output/links.js"></script>
-	<script type="text/javascript" src="./packages/webcomponents/output/merlin.js"></script>
-	<script type="text/javascript" src="./packages/webcomponents/output/rover.js"></script>
+	<script type="text/javascript" src="./packages/webcomponents/output/agent.js"></script>
 	<style>
 		main {
 			display: flex;
 			flex-direction: row;
+			justify-content: center;
+			align-items: center;
+			height: 300px;
+			max-height: 50vh;
+		}
+		#actionList {
+			display: flex;
 			flex-wrap: wrap;
-			justify-content: space-evenly;
+		}
+		#actionList button {
+			margin: 4px 1rem;
 		}
 	</style>
 </head>
 
 <body>
 	<main>
-		<modern-clippy id="clippy"></modern-clippy>
-		<modern-merlin id="merlin">
-			<div>Hello World</div>
-		</modern-merlin>
-		<modern-links id="links"></modern-links>
-		<modern-rover id="rover"></modern-rover>
+		<modern-agent id="agent"></modern-agent>
 	</main>
+	<div>
+		<div>
+			<label>
+				<h2>Agent</h2>
+				<select id="agentSelect">
+					<option value="clippy">Clippy</option>
+					<option value="links">Links</option>
+					<option value="merlin">Merlin</option>
+					<option value="rover">Rover</option>
+				</select>
+			</label>
+			<script>
+				function loadAgent(name) {
+					const url = `./packages/agents/output/${name}.json`;
+					agent.setAttribute('bundle', url);
+				}
+				agentSelect.addEventListener('change', (event) => {
+					loadAgent(event.target.value);
+				});
+				loadAgent(agentSelect.value || 'clippy');
+			</script>
+		</div>
+		<div>
+			<h2>Actions</h2>
+			<div id="actionList"></div>
+			<script>
+				agent.addEventListener('loaded', () => {
+					actionList.innerHTML = '';
+					for (const action of agent.actions) {
+						const name = action.replace(/([A-Z])/g, ' $1').replace(/_/g, ' ').trim();
+						const button = document.createElement('button');
+						button.textContent = name;
+						button.value = action;
+						actionList.appendChild(button);
+					}
+				});
+				actionList.addEventListener('click', (event) => {
+					agent.play(event.target.value);
+				});
+			</script>
+		</div>
+		<div>
+			<h2>Speech</h2>
+			<p>
+				<input id="words" type="text" placeholder="words">
+				<button id="say">Say</button>
+			</p>
+			<p>
+				<button id="clearSpeech">Clear</button>
+			</p>
+			<div>
+				<h3>Position</h3>
+				<div id="speechPosition">
+					<button value="top">Top</button>
+					<button value="right">Right</button>
+					<button value="bottom">Bottom</button>
+					<button value="left">Left</button>
+				</div>
+			</div>
+
+			<script>
+				say.addEventListener('click', () => {
+					const node = document.createElement('div');
+					node.textContent = words.value;
+					agent.innerHTML = '';
+					agent.appendChild(node);
+				});
+				clearSpeech.addEventListener('click', () => {
+					agent.innerHTML = '';
+				});
+				speechPosition.addEventListener('click', (event) => {
+					const pos = event.target.value;
+					agent.setAttribute('dialog', pos);
+				});
+			</script>
+		</div>
+		<div>
+			<h2>Extras</h2>
+			<button id="mute">Mute</button>
+			<script>
+				mute.addEventListener('click', () => {
+					const isMuted = agent.getAttribute('mute') === 'true';
+					agent.setAttribute('mute', String(!isMuted));
+					mute.textContent = isMuted ? 'Mute' : 'Unmute';
+				});
+			</script>
+		</div>
+	</div>
 </body>
 </html>
