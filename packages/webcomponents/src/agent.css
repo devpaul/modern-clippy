@@ -97,19 +97,47 @@
 
 /* LEFT DIALOG (right triangle) */
 
+.left.bubble:before {
+	content: "";
+	position: absolute;
+	top: var(--triangle-vertical-placement);
+	right: calc(-1 * (var(--triangle-height) + var(--triangle-border)));
+	border-width: calc(var(--triangle-border) + var(--triangle-base) / 2) 0 calc(var(--triangle-border) + var(--triangle-base) / 2) calc(var(--triangle-height) + var(--triangle-border));
+	border-style: solid;
+	border-color: transparent var(--border-color) transparent;
+}
+
+.left.bubble:after {
+	content: "";
+	position: absolute;
+	top: calc(var(--triangle-vertical-placement) + var(--triangle-border));
+	right: calc(-1 * var(--triangle-height));
+	border-width: 50px 145px 50px 0;
+	border-width: calc(var(--triangle-base) / 2) 0 calc(var(--triangle-base) / 2) var(--triangle-height);
+	border-style: solid;
+	border-color: transparent var(--bg-color) transparent;
+}
+
 /* BOTTOM DIALOG (top triangle) */
 
-.speech-bubble-left:after {
-	content: '';
+/* outer triangle border */
+.bottom.bubble:before {
+	content: "";
 	position: absolute;
-	right: 0;
-	top: 50%;
-	width: 0;
-	height: 0;
-	border: 20px solid transparent;
-	border-left-color: #ffffbb;
-	border-right: 0;
-	border-bottom: 0;
-	margin-top: -10px;
-	margin-right: -20px;
+	top: calc(-1 * (var(--triangle-height) + var(--triangle-border)));
+	left: var(--triangle-placement);
+	border-width: 0 calc(var(--triangle-border) + var(--triangle-base) / 2) calc(var(--triangle-height) + var(--triangle-border));
+	border-style: solid;
+	border-color: var(--border-color) transparent;
+}
+
+/* creates the smaller triangle */
+.bottom.bubble:after {
+	content: "";
+	position: absolute;
+	top: calc(-1 * var(--triangle-height));
+	left: calc(var(--triangle-placement) + var(--triangle-border));
+	border-width: 0 calc(var(--triangle-base) / 2) var(--triangle-height);
+	border-style: solid;
+	border-color: var(--bg-color) transparent;
 }
