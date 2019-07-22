@@ -62,6 +62,12 @@ export class Agent extends HTMLElement {
 			const result = await fetch(config);
 			config = (await result.json()) as AgentConfiguration;
 		}
+		if (config.license) {
+			console.log('===========================================================');
+			console.log('BUNDLE LICENSE');
+			console.log(config.license);
+			console.log('===========================================================');
+		}
 		this._config = config;
 		while (this._overlays.firstChild) {
 			this._overlays.removeChild(this._overlays.firstChild);
