@@ -21,6 +21,13 @@
 			margin: 4px 1rem;
 		}
 	</style>
+	<template id="twitterTemplate">
+		<div>
+			<p>Hey have you seen this...</p>
+			<a class="twitter-timeline" href="https://twitter.com/developerPaul?ref_src=twsrc%5Etfw" data-width="400" data-tweet-limit="1">Tweets by developerPaul</a>
+			<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+		</div>
+	</template>
 </head>
 
 <body>
@@ -64,7 +71,25 @@
 					}
 				});
 				actionList.addEventListener('click', (event) => {
-					agent.play(event.target.value);
+					const action = event.target.value;
+					action && agent.play(event.target.value);
+				});
+			</script>
+		</div>
+		<div>
+			<h2>Controls</h2>
+			<button id="idle">Idle</button>
+			<button id="stopButton">Stop</button>
+			<button id="stopImmediately">Stop Immediately</button>
+			<script>
+				idle.addEventListener('click', () => {
+					agent.playIdle();
+				});
+				stopButton.addEventListener('click', () => {
+					agent.stop();
+				});
+				stopImmediately.addEventListener('click', () => {
+					agent.stopImmediately();
 				});
 			</script>
 		</div>
@@ -76,6 +101,7 @@
 			</p>
 			<p>
 				<button id="clearSpeech">Clear</button>
+				<button id="showTwitter">Twitter</button>
 			</p>
 			<div>
 				<h3>Position</h3>
@@ -88,18 +114,27 @@
 			</div>
 
 			<script>
+				function resetSpeech() {
+					agent.innerHTML = '';
+					agent.style.removeProperty('--speech-width');
+				}
+
 				say.addEventListener('click', () => {
+					resetSpeech();
 					const node = document.createElement('div');
 					node.textContent = words.value;
-					agent.innerHTML = '';
 					agent.appendChild(node);
 				});
-				clearSpeech.addEventListener('click', () => {
-					agent.innerHTML = '';
-				});
+				clearSpeech.addEventListener('click', resetSpeech);
 				speechPosition.addEventListener('click', (event) => {
 					const pos = event.target.value;
 					agent.setAttribute('dialog', pos);
+				});
+				showTwitter.addEventListener('click', () => {
+					resetSpeech();
+					agent.style.setProperty('--speech-width', '300px');
+					const node = twitterTemplate.content.cloneNode(true);
+					agent.appendChild(node);
 				});
 			</script>
 		</div>

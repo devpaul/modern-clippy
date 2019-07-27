@@ -1,42 +1,84 @@
 import { FrameSize } from 'modern-clippy';
 
 export type RelativePosition = 'left' | 'right' | 'top' | 'bottom';
-export interface DialogPosition {
+export interface Space {
+	top: number;
+	bottom: number;
+	left: number;
+	right: number;
+}
+export interface DialogPosition extends Partial<Space> {
 	placement: RelativePosition;
-	bottom?: number;
-	left?: number;
-	right?: number;
-	top?: number;
+}
+export type Placement = RelativePosition | 'side' | 'horizontal' | 'vertical';
+export interface Dimension {
+	width: number;
+	height: number;
 }
 
 export function isRelativePosition(value: string): value is RelativePosition {
 	return value === 'left' || value === 'right' || value === 'top' || value === 'bottom';
 }
 
-function isOptionalNumber(value: any) {
-	return value == null || typeof value === 'number';
+function calculateAvailableSpace(node: HTMLElement): Space {
+	const geometry = node.getBoundingClientRect();
+	const screen = { height: window.innerHeight, width: window.innerWidth };
+
+	return {
+		top: geometry.top,
+		left: geometry.left,
+		right: screen.width - geometry.right,
+		bottom: screen.height - geometry.bottom
+	};
 }
 
-function isDialogPosition(value: any): value is DialogPosition {
-	return (
-		value &&
-		typeof value === 'object' &&
-		typeof value.placement === 'string' &&
-		isOptionalNumber(value.top) &&
-		isOptionalNumber(value.bottom) &&
-		isOptionalNumber(value.right) &&
-		isOptionalNumber(value.left)
-	);
+export function transformRelativePosition(placement: string[]): RelativePosition[] {
+	return placement.reduce<RelativePosition[]>((list, value) => {
+		if (isRelativePosition(value)) {
+			list.push(value);
+		} else if (value === 'vertical') {
+			list.push('top');
+			list.push('bottom');
+		} else if (value === 'horizontal' || value === 'side') {
+			list.push('left');
+			list.push('right');
+		}
+		return list;
+	}, []);
 }
 
-export function parsePosition(value: any): DialogPosition {
-	if (typeof value === 'string') {
-		value = JSON.parse(value);
+export function choosePosition(
+	node: HTMLElement,
+	dialogSpace: Dimension,
+	preferences: RelativePosition[] = ['left', 'right', 'top', 'bottom']
+): RelativePosition | undefined {
+	const { height, width } = dialogSpace;
+	const space = calculateAvailableSpace(node);
+	const position = transformRelativePosition(preferences);
+	for (let placement of position) {
+		switch (placement) {
+			case 'top':
+				if (space.top > height) {
+					return 'top';
+				}
+				break;
+			case 'bottom':
+				if (space.bottom > height) {
+					return 'bottom';
+				}
+				break;
+			case 'left':
+				if (space.left > width) {
+					return 'left';
+				}
+				break;
+			case 'right':
+				if (space.right > width) {
+					return 'right';
+				}
+				break;
+		}
 	}
-	if (isDialogPosition(value)) {
-		return value;
-	}
-	throw new Error('Invalid position');
 }
 
 export function getPosition(pos: RelativePosition, agentDimensions: FrameSize): DialogPosition {
@@ -53,17 +95,17 @@ export function getPosition(pos: RelativePosition, agentDimensions: FrameSize): 
 }
 
 function calculateLeft(agentDimensions: FrameSize): DialogPosition {
-	return { placement: 'left', top: 0, left: Math.floor(-0.75 * agentDimensions.width) };
+	return { placement: 'left', top: 0, right: Math.floor(0.75 * agentDimensions.width) };
 }
 
 function calculateRight(agentDimensions: FrameSize): DialogPosition {
-	return { placement: 'right', top: 0, right: Math.floor(-0.75 * agentDimensions.width) };
+	return { placement: 'right', top: 0, left: Math.floor(0.75 * agentDimensions.width) };
 }
 
 function calculateTop(agentDimensions: FrameSize): DialogPosition {
-	return { placement: 'top', top: Math.floor(-0.75 * agentDimensions.height) };
+	return { placement: 'top', bottom: Math.floor(0.75 * agentDimensions.height) };
 }
 
 function calculateBottom(agentDimensions: FrameSize): DialogPosition {
-	return { placement: 'bottom', bottom: Math.floor(-1.1 * agentDimensions.height) };
+	return { placement: 'bottom', top: Math.floor(agentDimensions.height) };
 }

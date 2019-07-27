@@ -1,7 +1,8 @@
 import { AgentConfiguration, FrameImages } from 'modern-clippy';
+
 import { animator } from '../../common/output/esm/animator';
 import audio, { SoundBoard } from '../../common/output/esm/coreAudio';
-import { isRelativePosition, parsePosition, getPosition, DialogPosition } from './dialog';
+import { choosePosition, transformRelativePosition, DialogPosition, getPosition, RelativePosition } from './dialog';
 import { loadStyles, loadTemplate } from './template';
 
 function cssPx(pos?: number) {
@@ -49,10 +50,9 @@ export class Agent extends HTMLElement {
 				this._mute = newValue === 'true';
 				break;
 			case 'dialog':
-				const position = isRelativePosition(newValue)
-					? getPosition(newValue, this._config.frameSize)
-					: parsePosition(newValue);
-				this._setDialogPosition(position);
+				const placement = newValue ? transformRelativePosition(newValue.split(',')) : undefined;
+				this._refreshDialogPlacement(placement);
+				break;
 		}
 	}
 
@@ -77,7 +77,7 @@ export class Agent extends HTMLElement {
 		}
 		this._overlays.style.height = cssPx(config.frameSize.height);
 		this._overlays.style.width = cssPx(config.frameSize.width);
-		this._resetDialogPosition();
+		this.resetDialogPosition();
 		this._soundBoard = await audio.load(config.soundPack);
 		this.play('Show');
 		this.dispatchEvent(new CustomEvent('loaded'));
@@ -130,6 +130,12 @@ export class Agent extends HTMLElement {
 		this.play(idleActions[Math.floor(Math.random() * idleActions.length)]);
 	}
 
+	resetDialogPosition() {
+		const attributeValue = this.getAttribute('dialog');
+		const placement = (attributeValue && transformRelativePosition(attributeValue.split(','))) || undefined;
+		this._refreshDialogPlacement(placement);
+	}
+
 	stop() {
 		this._control && this._control.stop();
 	}
@@ -169,18 +175,15 @@ export class Agent extends HTMLElement {
 		this._speech.style.visibility = slot.assignedElements().length ? 'visible' : 'hidden';
 	}
 
-	private _resetDialogPosition() {
-		const attributeValue = this.getAttribute('dialog');
-		if (attributeValue) {
-			try {
-				const position = isRelativePosition(attributeValue)
-					? getPosition(attributeValue, this._config.frameSize)
-					: parsePosition(attributeValue);
-				this._setDialogPosition(position);
-				return;
-			} catch (e) {}
-		}
-		this._setDialogPosition(getPosition('left', this._config.frameSize));
+	private _refreshDialogPlacement(placement?: RelativePosition[]) {
+		const dialog = this._speech;
+		const dialogSpace = { height: dialog.clientHeight || 100, width: dialog.clientWidth || 100 };
+		const relative =
+			placement && placement.length
+				? choosePosition(this, dialogSpace, placement) || placement[0]
+				: choosePosition(this, dialogSpace) || 'top';
+		const position = getPosition(relative, this._config.frameSize);
+		this._setDialogPosition(position);
 	}
 
 	private _setDialogPosition(position: DialogPosition) {

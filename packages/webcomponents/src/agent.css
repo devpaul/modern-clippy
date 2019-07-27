@@ -9,6 +9,7 @@
 	--triangle-border: 1px;
 	--speech-min-width: 40px;
 	--speech-min-height: 40px;
+	--speech-width: auto;
 }
 
 .root {
@@ -35,7 +36,8 @@
 	display: block;
 	z-index: 1000;
 	min-width: var(--speech-min-width);
-	min-height: var(--speech-min-height)
+	min-height: var(--speech-min-height);
+	width: var(--speech-width);
 }
 
 .bubble {
