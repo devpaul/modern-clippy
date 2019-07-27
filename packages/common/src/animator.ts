@@ -56,7 +56,7 @@ export function animator(animation: AnimationDefinition, frameCallback: (frame: 
 		done,
 
 		stop() {
-			exit = false;
+			exit = true;
 			return done;
 		},
 

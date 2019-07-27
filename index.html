@@ -81,6 +81,7 @@
 			<button id="idle">Idle</button>
 			<button id="stopButton">Stop</button>
 			<button id="stopImmediately">Stop Immediately</button>
+			<p id="message"></p>
 			<script>
 				idle.addEventListener('click', () => {
 					agent.playIdle();
@@ -90,6 +91,12 @@
 				});
 				stopImmediately.addEventListener('click', () => {
 					agent.stopImmediately();
+				});
+				agent.addEventListener('actionStart', (event) => {
+					message.textContent = `Playing ${ event.detail.action }`;
+				});
+				agent.addEventListener('actionEnd', (event) => {
+					message.textContent = `Completed ${ event.detail.action }`;
 				});
 			</script>
 		</div>
