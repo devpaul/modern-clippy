@@ -156,7 +156,7 @@
 					for (const param of params) {
 						const [ key, value ] = param.split('=');
 						if (key === 'say') {
-							sayWords(value);
+							sayWords(decodeURIComponent(value));
 						}
 					}
 				});
