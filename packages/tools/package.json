@@ -23,7 +23,7 @@
     "@types/yargs": "^13.0.0",
     "glob": "^7.1.4",
     "mime": "^2.4.4",
-    "tsconfig-paths": "^3.8.0",
+    "tsconfig-paths": "^3.10.1",
     "typescript": "^3.5.2",
     "yargs": "^13.2.4"
   }
